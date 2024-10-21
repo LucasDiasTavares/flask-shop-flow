@@ -1,4 +1,5 @@
 import os
+from sqlalchemy.engine.url import URL
 
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -10,14 +11,18 @@ class Config:
     DEBUG = os.getenv("DEBUG")
     CONFIG_TYPE = os.getenv("CONFIG_TYPE")
     FLASK_DEBUG = os.getenv("FLASK_DEBUG")
-    DB_USERNAME = os.getenv("DB_USERNAME")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
-    DB_HOST = os.getenv("DB_HOST")
-    DB_NAME = os.getenv("DB_NAME")
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    url_obj = URL.create(
+        "postgresql+psycopg2",
+        username=os.getenv("DB_USERNAME"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME")
+    )
+    SQLALCHEMY_DATABASE_URI = url_obj
 
 
 class ProductionConfig(Config):
